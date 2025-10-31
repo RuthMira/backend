@@ -30,5 +30,5 @@ Headers: `Authorization: Bearer <token>`
 - DELETE `produtos/:id`
 
 Notas:
-- Admin inicial é criado automaticamente no bootstrap.
+- Admin inicial é criado automaticamente no db.
 - Respostas de erro seguem filtro global: `{ statusCode, message, timestamp }`.
