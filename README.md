@@ -11,7 +11,10 @@ Env:
 
 ### Autenticação
 - POST `auth/login` — body: `{ "nome": string, "senha": string }`
-  - retorna `{ access_token }`
+- retorna `{ access_token }`
+
+### Documentacao das API
+- Acesse `http://localhost:3000/docs`
 
 ### Usuários (somente ADMIN)
 Headers: `Authorization: Bearer <token>`
