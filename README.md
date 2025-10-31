@@ -13,8 +13,23 @@ Env:
 - POST `auth/login` — body: `{ "nome": string, "senha": string }`
 - retorna `{ access_token }`
 
-### Documentacao das API
-- Acesse `http://localhost:3000/docs`
+### Swagger (Docs)
+
+- Acesse: `http://localhost:3000/docs`
+- Clique em “Authorize” e cole `Bearer <access_token>`
+- Use “Try it out” para testar cada rota:
+  - Auth: `POST /auth/login`
+  - Usuários (admin): `GET/POST/PUT/DELETE /usuarios`
+  - Produtos (user): `GET/POST/PUT/DELETE /produtos`
+
+### Testes (Jest e2e)
+
+- Rodar: `npm run test:e2e`
+- O arquivo `test/app.e2e-spec.ts` cobre:
+  - Login válido e inválido
+  - CRUD de usuários (apenas admin)
+  - CRUD de produtos (somente do usuário autenticado)
+  - Regras de permissão (401/403/404)
 
 ### Usuários (somente ADMIN)
 Headers: `Authorization: Bearer <token>`
