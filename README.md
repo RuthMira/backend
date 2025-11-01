@@ -1,13 +1,29 @@
-## API Backend — NestJS + Prisma (SQLite)
+## API Backend — NestJS + Prisma (MySQL)
 
-### Rodando
-- `npm install`
-- `npx prisma migrate deploy` ou `npx prisma db push` (gera `prisma/dev.db`)
-- `npm run start:dev`
+### Subir com Docker + MySQL
+- Requisitos: Docker Desktop
 
-Env:
-- `DATABASE_URL=file:./dev.db`
-- `JWT_SECRET` opcional (default `secret`)
+Passo a passo
+- Copie `.env.example` para `.env` e ajuste valores se necessario.
+  - `DATABASE_URL=`
+  - `SHADOW_DATABASE_URL=`
+  - `MYSQL_ROOT_PASSWORD`, `MYSQL_DATABASE`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_PORT`
+- Suba o MySQL: `npm run db:up`
+  - Verifique saúde: `npm run db:ps` (status healthy) ou `npm run db:logs`
+- Criar tabelas (sem migrações):
+  - Recomendada: `npm run prisma:push` (ou `npx prisma db push`)
+- Verificar tabelas no MySQL:
+  - `docker exec -it prova_mysql mysql -uprova -pdevpass -e "SHOW TABLES" prova`
+- Opcional (usar migrações com shadow DB):
+  - Desenvolvimento: `npm run migrate:dev` (requer `SHADOW_DATABASE_URL` com usuário root)
+- Iniciar API: `npm run start:dev`
+
+Admin inicial
+- O admin é criado automaticamente quando a API sobe (não na migration).
+- Credenciais padrão: nome `sistematxai`, senha `123456789`.
+
+Utilidades e segurança
+- Compose lê credenciais do `.env` (não há senhas dentro do `docker-compose.yml`).
 
 ### Autenticação
 - POST `auth/login` — body: `{ "nome": string, "senha": string }`
@@ -48,5 +64,4 @@ Headers: `Authorization: Bearer <token>`
 - DELETE `produtos/:id`
 
 Notas:
-- Admin inicial é criado automaticamente no db.
 - Respostas de erro seguem filtro global: `{ statusCode, message, timestamp }`.
