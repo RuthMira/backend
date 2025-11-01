@@ -19,12 +19,12 @@ export class ProdutoController {
 
   @Get()
   findAll(@Request() req: any) {
-    return this.service.findAll(req.user.userId);
+    return this.service.findAll(req.user.userId, req.user.cargo);
   }
 
   @Get(':id')
   findOne(@Request() req: any, @Param('id', ParseIntPipe) id: number) {
-    return this.service.findOne(req.user.userId, id);
+    return this.service.findOne(req.user.userId, req.user.cargo, id);
   }
 
   @Put(':id')
@@ -33,11 +33,11 @@ export class ProdutoController {
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateProdutoDto,
   ) {
-    return this.service.update(req.user.userId, id, body);
+    return this.service.update(req.user.userId, req.user.cargo, id, body);
   }
 
   @Delete(':id')
   remove(@Request() req: any, @Param('id', ParseIntPipe) id: number) {
-    return this.service.remove(req.user.userId, id);
+    return this.service.remove(req.user.userId, req.user.cargo, id);
   }
 }

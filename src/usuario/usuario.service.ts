@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -34,7 +34,10 @@ export class UsuarioService {
     return this.prisma.usuario.update({ where: { id }, data: toUpdate, select: { id: true, nome: true, cargo: true } });
   }
 
-  async remove(id: number) {
+  async remove(currentUserId: number, id: number) {
+    if (currentUserId === id) {
+      throw new ForbiddenException('Não é permitido excluir a si mesmo');
+    }
     const exists = await this.prisma.usuario.findUnique({ where: { id } });
     if (!exists) throw new NotFoundException('Usuário não encontrado');
     await this.prisma.usuario.delete({ where: { id } });

@@ -64,6 +64,19 @@ describe('API e2e', () => {
     expect(res.body.some((u: any) => u.nome === newUser.nome)).toBe(true);
   });
 
+  it('usuarios: admin não pode se auto deletar -> 403', async () => {
+    const resList = await request(server)
+      .get('/usuarios')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .expect(200);
+    const admin = resList.body.find((u: any) => u.nome === 'sistematxai');
+    expect(admin).toBeDefined();
+    await request(server)
+      .delete(`/usuarios/${admin.id}`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .expect(403);
+  });
+
   it('usuarios: obter por id (admin)', async () => {
     const res = await request(server)
       .get(`/usuarios/${createdUserId}`)
@@ -128,6 +141,15 @@ describe('API e2e', () => {
     expect(res.body.valor).toBe(149.9);
   });
 
+  it('produtos: listar (admin vê todos)', async () => {
+    const res = await request(server)
+      .get('/produtos')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .expect(200);
+    expect(Array.isArray(res.body)).toBe(true);
+    expect(res.body.some((p: any) => p.id === createdProductId)).toBe(true);
+  });
+
   it('permissão: usuario comum não acessa /usuarios -> 403', async () => {
     await request(server)
       .get('/usuarios')
@@ -135,11 +157,12 @@ describe('API e2e', () => {
       .expect(403);
   });
 
-  it('permissão: admin não acessa produto de outro usuário -> 403', async () => {
-    await request(server)
+  it('permissão: admin acessa produto de qualquer usuário -> 200', async () => {
+    const res = await request(server)
       .get(`/produtos/${createdProductId}`)
       .set('Authorization', `Bearer ${adminToken}`)
-      .expect(403);
+      .expect(200);
+    expect(res.body.id).toBe(createdProductId);
   });
 
   it('produtos: delete (do usuário)', async () => {
